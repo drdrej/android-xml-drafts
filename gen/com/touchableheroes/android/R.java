@@ -11,6 +11,6 @@ public final class R {
     public static final class attr {
     }
     public static final class string {
-        public static final int activity_sample_code=0x7f020000;
+        public static int activity_sample_code=0x7f020000;
     }
 }

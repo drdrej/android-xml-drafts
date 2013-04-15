@@ -2,6 +2,8 @@ package com.touchableheroes.android.xml.parser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -78,7 +80,7 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		int open = 0;
 		int close = 0;
 
-		while (waitingForEndOfDoc()) {
+		while (isEndOfDoc()) {
 			final Tag current = nextTag(state.parentTag());
 
 			if (current == null)
@@ -173,6 +175,13 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		return null;
 	}
 
+	/**
+	 * reads the text/value of a tag.
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
 	protected String readText() throws IOException, XmlPullParserException {
 		final StringBuilder result = new StringBuilder(100);
 
@@ -183,6 +192,51 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		return result.toString();
 	}
 
+	
+	/**
+	 * Reads and converts a value of a tag to int.
+	 * if couldn't parse value, returs passed default-value.
+	 * 
+	 * @param defaultVal
+	 * @return
+	 * 
+	 * @throws XmlPullParserException
+	 * @throws IOException
+	 */
+	protected int readTextInt(int defaultVal) throws XmlPullParserException, IOException {
+		final String txt = readText();
+		
+		try {
+			return Integer.parseInt(txt);
+		} catch (final NumberFormatException exc) {
+			return defaultVal;
+		}
+	}
+	
+	
+	/**
+	 * reads URI from text-value of a tag.
+	 * 
+	 * @return null
+	 * 
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
+	protected URI readURI() throws IOException, XmlPullParserException {
+		try {
+			final String txt = readText();
+			return new URI(txt);
+		} catch (final URISyntaxException exc) {
+			return null;
+		}
+	}
+	
+	/**
+	 * gets a string-value of an attribute.
+	 * 
+	 * @param attrName
+	 * @return
+	 */
 	protected String getAttribute(final String attrName) {
 		final int length = parser.getAttributeCount();
 		
@@ -196,6 +250,16 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		return null;
 	}
 	
+	
+	/**
+	 * gets a string-value of an attribute.
+	 * supports namespace.
+	 * 
+	 * @param ns
+	 * @param attrName
+	 * 
+	 * @return
+	 */
 	protected String getAttribute(final String ns, final String attrName) {
 		if( ns == null )
 			throw new IllegalArgumentException( "Namespace is NULL" );
@@ -231,7 +295,14 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		}
 	}
 
-	public boolean waitingForEndOfDoc() throws Throwable {
+	
+	/**
+	 * check state of the parser.
+	 * 
+	 * @return
+	 * @throws Throwable
+	 */
+	public boolean isEndOfDoc() throws Throwable {
 		return (parser.getEventType() != XmlPullParser.END_DOCUMENT);
 
 		// if (parser.getEventType() != XmlPullParser.END_TAG)
@@ -240,10 +311,27 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		// return state.hasAllOpenTagsClosed();
 	}
 
+	
+	/**
+	 * callback-method is called when start-tag has been catched.
+	 * 
+	 * @param current
+	 * @param callback
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
 	protected abstract void startTag(final Tag current,
 			final C callback) throws IOException,
 			XmlPullParserException;
 
+	/**
+	 * callback-method is called when close-tag has been catched.
+	 *  
+	 * @param current
+	 * @param callback
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
 	protected abstract void closeTag(final Tag current,
 			final C callback) throws IOException,
 			XmlPullParserException;

@@ -13,6 +13,8 @@ public interface Tag {
 
 	public String getNamespace();
 	
+	public Tag findInNameIndex(final String name);
+	
 	public final static Tag DEFAULT = new DefaultTag();
 	
 	public final static Tag TEXT = new TextTag();
@@ -39,6 +41,16 @@ public interface Tag {
 		@Override
 		public String type() {
 			return "UNKNOWN";
+		}
+
+		@Override
+		public Tag findInNameIndex(String name) {
+			return null;
+		}
+
+		@Override
+		public Tag[] patterns() {
+			return new Tag[0];
 		}
 	}
 
@@ -70,6 +82,16 @@ public interface Tag {
 		public String type() {
 			return "TEXT";
 		}
+
+		@Override
+		public Tag findInNameIndex(String name) {
+			return null;
+		}
+
+		@Override
+		public Tag[] patterns() {
+			return new Tag[0];
+		}
 	}
 
 
@@ -80,5 +102,12 @@ public interface Tag {
      * @return
      */
 	public String type();
+
+	/**
+	 * all assigned patterns.
+	 * 
+	 * @return
+	 */
+	public Tag[] patterns();
 
 }

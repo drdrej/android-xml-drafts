@@ -22,7 +22,7 @@
     
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17" />
     
-    <application android:label="@string/activity_sample_code"
+    <application android:label="android-xml-draft"
            
             android:allowBackup="false" >
 

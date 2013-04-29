@@ -30,6 +30,6 @@ public class Logger {
 	}
 
 	public static boolean isDebug() {
-		return true;
+		return false;
 	}
 }

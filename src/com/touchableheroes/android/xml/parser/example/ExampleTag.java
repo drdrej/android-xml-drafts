@@ -52,5 +52,15 @@ public enum ExampleTag implements Tag {
 	public String type() {
 		return this.name();
 	}
+
+	@Override
+	public Tag findInNameIndex(final String name) {
+		return data.findInNameIndex(name);
+	}
+
+	@Override
+	public Tag[] patterns() {
+		return data.patterns();
+	}
 	
 }

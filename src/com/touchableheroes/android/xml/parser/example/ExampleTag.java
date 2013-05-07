@@ -54,13 +54,28 @@ public enum ExampleTag implements Tag {
 	}
 
 	@Override
-	public Tag findInNameIndex(final String name) {
-		return data.findInNameIndex(name);
+	public Tag findInNameIndex(final String fullName) {
+		return data.findInNameIndex(fullName);
 	}
 
 	@Override
 	public Tag[] patterns() {
 		return data.patterns();
+	}
+
+	@Override
+	public String fullName() {
+		return data.fullName();
+	}
+
+	@Override
+	public boolean isPattern() {
+		return data.isPattern();
+	}
+
+	@Override
+	public boolean match(final String candidate) {
+		return data.match(candidate);
 	}
 	
 }

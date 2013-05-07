@@ -34,7 +34,8 @@ public class Timer {
 		
 		this.time = System.currentTimeMillis() - this.start;
 		
-		System.out.println( "[TIME] -- timer : " + this.name + " = "+ this.time + "ms " );
+		if( Logger.isDebug() )
+		 Logger.debug( "[TIME] -- timer : " + this.name + " = "+ this.time + "ms " );
 		
 		if( accumulate )
 			this.accumulate();
@@ -57,8 +58,8 @@ public class Timer {
 			MAP.put(this.name, (accumulated + this.time));
 		}
 		
-		System.out.println( "[ACCUMULATE] -- timer : "
-				+ this.name + " = " + MAP.get( this.name ) + "ms" );
+//		System.out.println( "[ACCUMULATE] -- timer : "
+//				+ this.name + " = " + MAP.get( this.name ) + "ms" );
 			
 		
 	}

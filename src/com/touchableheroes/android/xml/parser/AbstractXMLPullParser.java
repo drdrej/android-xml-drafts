@@ -158,20 +158,19 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 						parser.getName());
 
 				logIdentifiedStartTag(tag);
+				
+				System.out.println("--- found-x start: <" + parser.getName() + " identified='" + tag + "' /> ");
 				return tag;
 			case XmlPullParser.END_TAG:
 				final Tag parentTag = state.parentTag();
 				if (parentTag == null) {
-
 					return null;
 				}
 
-				final String currentName = parser.getName();
-				final String parentTagName = parentTag.getName();
+				final String currentFullName = parser.getName();
+				final boolean isCandidate = TagUtils.isCandidate(parentTag, currentFullName);
 
-				final boolean isCandidate = TagUtils.isCandidate(null,
-						parentTagName, null, currentName);
-
+				System.out.println("--- found-x end: <" + parser.getName() + " isCandidate='" + isCandidate + "' /> ");
 				if (isCandidate)
 					return parentTag;
 
@@ -266,19 +265,30 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 	 * @param attrName
 	 * @return
 	 */
-	protected String getAttribute(final String attrName) {
+	public String getAttribute(final String fullAttrName) {
 		final int length = parser.getAttributeCount();
 
 		for (int i = 0; i < length; i++) {
 			final String name = parser.getAttributeName(i);
 
-			if (attrName.equals(name))
+			if (fullAttrName.equals(name))
 				return parser.getAttributeValue(i);
 		}
 
 		return null;
 	}
 
+	public String getAttribute(final String ns, final String name) {
+		final String fullAttrName;
+		
+		if( ns == null )
+			fullAttrName = name;
+		else
+			fullAttrName = ns + ":" + name;
+		
+		return getAttribute(fullAttrName);
+	}
+	
 	/**
 	 * Reads Boolean from text-value.
 	 * 
@@ -293,20 +303,20 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 		}
 	}
 
-	/**
-	 * gets a string-value of an attribute. supports namespace.
-	 * 
-	 * @param ns
-	 * @param attrName
-	 * 
-	 * @return
-	 */
-	protected String getAttribute(final String ns, final String attrName) {
-		if (ns == null)
-			throw new IllegalArgumentException("Namespace is NULL");
-
-		return parser.getAttributeValue(ns, attrName);
-	}
+//	/**
+//	 * gets a string-value of an attribute. supports namespace.
+//	 * 
+//	 * @param ns
+//	 * @param attrName
+//	 * 
+//	 * @return
+//	 */
+//	protected String getAttribute(final String ns, final String attrName) {
+//		if (ns == null)
+//			throw new IllegalArgumentException("Namespace is NULL");
+//
+//		return parser.getAttributeValue(ns, attrName);
+//	}
 
 	public void startDoc() throws Throwable {
 		parser.nextTag();
@@ -344,11 +354,6 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 	 */
 	public boolean isEndOfDoc() throws Throwable {
 		return (parser.getEventType() != XmlPullParser.END_DOCUMENT);
-
-		// if (parser.getEventType() != XmlPullParser.END_TAG)
-		// return true;
-
-		// return state.hasAllOpenTagsClosed();
 	}
 
 	/**

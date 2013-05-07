@@ -13,13 +13,15 @@ public interface Tag {
 
 	public String getNamespace();
 	
-	public Tag findInNameIndex(final String name);
+	public Tag findInNameIndex(final String fullName);
 	
 	public final static Tag DEFAULT = new DefaultTag();
 	
 	public final static Tag TEXT = new TextTag();
 
+	public boolean isPattern();
 	
+	public boolean match(final String candidate);
 	
 	static class DefaultTag implements Tag {
 
@@ -44,13 +46,28 @@ public interface Tag {
 		}
 
 		@Override
-		public Tag findInNameIndex(String name) {
+		public Tag findInNameIndex(final String fullName) {
 			return null;
 		}
 
 		@Override
 		public Tag[] patterns() {
 			return new Tag[0];
+		}
+
+		@Override
+		public String fullName() {
+			return "";
+		}
+
+		@Override
+		public boolean isPattern() {
+			return false;
+		}
+
+		@Override
+		public boolean match(final String candidate) {
+			return false;
 		}
 	}
 
@@ -84,13 +101,28 @@ public interface Tag {
 		}
 
 		@Override
-		public Tag findInNameIndex(String name) {
+		public Tag findInNameIndex(final String fullName) {
 			return null;
 		}
 
 		@Override
 		public Tag[] patterns() {
 			return new Tag[0];
+		}
+
+		@Override
+		public String fullName() {
+			return "";
+		}
+		
+		@Override
+		public boolean isPattern() {
+			return false;
+		}
+
+		@Override
+		public boolean match(final String candidate) {
+			return false;
 		}
 	}
 
@@ -109,5 +141,7 @@ public interface Tag {
 	 * @return
 	 */
 	public Tag[] patterns();
+
+	public String fullName();
 
 }

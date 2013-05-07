@@ -5,6 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.touchableheroes.android.log.Logger;
 
 
 /**
@@ -20,6 +24,10 @@ public class TagData implements Tag {
 	private final Tag[] children;
 	
 	private final Map<String, Tag> nameIdx;
+	private final String fullName;
+	private final boolean isPattern;
+	
+	private final Pattern pattern;
 
 	/**
 	 * This constructor will be used as root-tag.
@@ -27,10 +35,58 @@ public class TagData implements Tag {
 	public TagData() {
 		this.ns = null;
 		this.name = "";
+		this.fullName = "";
+		this.isPattern = false;
+		this.pattern = null;
+		
 		this.children = Tag.DEFAULT.children();
 		
 		this.nameIdx = indexingNames();
 	}
+
+	public TagData(final String ns, final String name,
+			final Tag... children) {
+		this.ns = ns;
+		this.name = name;
+		
+		if( this.ns == null )
+			this.fullName = this.name;
+		else
+			this.fullName = this.ns + ":" + this.name;
+		
+		// TODO: code umbauen.
+		this.isPattern = this.name.startsWith( "?" );
+		if( isPattern ) {
+			final String patternStr = this.name.substring(1).trim();
+			this.pattern =  Pattern.compile(patternStr);
+		} else 
+			this.pattern = null;
+				
+				
+		if( children == null ) {
+			this.children = Tag.DEFAULT.children();
+		} else {
+			this.children = children;
+		}
+		
+		this.nameIdx = indexingNames();
+	}
+	
+	public boolean match(final String candidate) {
+		if( !isPattern )
+			return false;
+		
+		try {
+			final Matcher matcher = pattern.matcher(candidate);
+			return matcher.matches();
+		} catch (final Throwable x) {
+			Logger.exception(
+					"couldn't parse tag-name-definition. maybe pattern is invalid = "
+							+ pattern.pattern(), x);
+			return false;
+		}
+	}
+
 
 	/** 
 	 * inits index for tag-names.
@@ -44,29 +100,15 @@ public class TagData implements Tag {
 		final Map<String, Tag> rval = new HashMap<String, Tag>();
 				
 		for ( final Tag child : this.children ) {
-			final String name = child.getName();
+			if( child.isPattern() )
+				continue;
 			
-			if( !TagUtils.isPattern(name) )
-				rval.put(name, child);
+			rval.put(child.fullName(), child);
 		}
 
 		return rval;
 	}
-
-	public TagData(final String ns, final String name,
-			final Tag... children) {
-		this.ns = ns;
-		this.name = name;
-		
-		if( children == null ) {
-			this.children = Tag.DEFAULT.children();
-		} else {
-			this.children = children;
-		}
-		
-		this.nameIdx = indexingNames();
-	}
-
+	
 	public TagData(final String name, final Tag... children) {
 		this(null, name, children );
 	}
@@ -93,18 +135,22 @@ public class TagData implements Tag {
 		return namespace();
 	}
 
+	/**
+	 * @param candidate is a full-name of a tag. never NULL.
+	 */
 	@Override
-	public Tag findInNameIndex(final String name) {
-		return this.nameIdx.get( name );
+	public Tag findInNameIndex(
+			final String candidate) {
+		System.out.println("-- find tag-name: " + candidate);
+		
+		return this.nameIdx.get( candidate );
 	}
 	
 	public Tag[] patterns() {
 		final List<Tag> patterns = new ArrayList<Tag>();
 		
 		for( final Tag tag : this.children() ) {
-			final String name = tag.getName();
-			
-			if( TagUtils.isPattern(name) ) {
+			if( tag.isPattern() ) {
 				patterns.add( tag );
 			}
 		}
@@ -122,6 +168,16 @@ public class TagData implements Tag {
 	@Override
 	public String type() {
 		return name();
+	}
+
+	@Override
+	public String fullName() {
+		return this.fullName;
+	}
+
+	@Override
+	public boolean isPattern() {
+		return this.isPattern ;
 	}
 
 }

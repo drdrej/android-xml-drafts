@@ -21,7 +21,7 @@ import com.touchableheroes.android.log.Timer;
  * @author Andreas Siebert, ask@touchableheroes.com
  * 
  */
-public abstract class AbstractXMLPullParser<C extends Callback> {
+public abstract class AbstractXMLPullParser<C extends Callback> implements TagEventHandler<C> {
 
 	private final State state = new State();
 	private final XmlPullParser parser;
@@ -87,15 +87,13 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 
 			switch (parser.getEventType()) {
 			case XmlPullParser.END_TAG:
-				closeTag(current, callback);
-				getState().closeTag(current);
+				handleCloseTagEvent(callback, current);
 
 				close++;
 				break;
 
 			case XmlPullParser.START_TAG:
-				startTag(current, callback);
-				getState().openTag(current);
+				handleStartTagEvent(callback, current);
 
 				open++;
 				break;
@@ -108,6 +106,18 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 			Logger.debug("-- found tags: open = " + open + " / closed = "
 					+ close);
 		}
+	}
+
+	public void handleStartTagEvent(final C callback, final Tag current)
+			throws IOException, XmlPullParserException {
+		getState().openTag(current);
+		startTag(current, callback);
+	}
+
+	public void handleCloseTagEvent(final C callback, final Tag current)
+			throws IOException, XmlPullParserException {
+		closeTag(current, callback);
+		getState().closeTag(current);
 	}
 
 	public XmlPullParser getParser() {
@@ -159,7 +169,6 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 
 				logIdentifiedStartTag(tag);
 				
-				System.out.println("--- found-x start: <" + parser.getName() + " identified='" + tag + "' /> ");
 				return tag;
 			case XmlPullParser.END_TAG:
 				final Tag parentTag = state.parentTag();
@@ -170,7 +179,6 @@ public abstract class AbstractXMLPullParser<C extends Callback> {
 				final String currentFullName = parser.getName();
 				final boolean isCandidate = TagUtils.isCandidate(parentTag, currentFullName);
 
-				System.out.println("--- found-x end: <" + parser.getName() + " isCandidate='" + isCandidate + "' /> ");
 				if (isCandidate)
 					return parentTag;
 

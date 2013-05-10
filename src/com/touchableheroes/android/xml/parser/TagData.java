@@ -141,8 +141,6 @@ public class TagData implements Tag {
 	@Override
 	public Tag findInNameIndex(
 			final String candidate) {
-		System.out.println("-- find tag-name: " + candidate);
-		
 		return this.nameIdx.get( candidate );
 	}
 	

@@ -2,6 +2,7 @@ package com.touchableheroes.android.xml.parser.example;
 
 import com.touchableheroes.android.xml.parser.Tag;
 import com.touchableheroes.android.xml.parser.TagData;
+import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 
 /**
  * An example how to declare states of the parser.
@@ -10,9 +11,18 @@ import com.touchableheroes.android.xml.parser.TagData;
  */
 public enum ExampleTag implements Tag {
 	
-	// TAG-Definition :::
+	ITEMS_PATTERN_ITEM( "item" ),
+	
+	ITEMS_PATTERN( "?^[a-z][0-9]$", ITEMS_PATTERN_ITEM ),
+	
+	ITEMS_SKIP( "skip", true ),
+
+	ITEMS_CHILDREN( "children", new SameRuleAs( "ITEMS" ) ),
+	
 	ITEM( "item" ),
-	ITEMS( "items", ITEM ),
+	
+	ITEMS( "items", ITEM, ITEMS_CHILDREN, ITEMS_PATTERN, ITEMS_SKIP ),
+	
 	ROOT("root", ITEMS );
 
 	// Attributes :::
@@ -28,8 +38,16 @@ public enum ExampleTag implements Tag {
 		this.data = new TagData(ns, name, children);
 	}
 
+	ExampleTag(final String name, final boolean skip) {
+		this.data = new TagData(null, name, skip);
+	}
+	
 	ExampleTag(final String name, final Tag... children) {
 		this.data = new TagData(null, name, children);
+	}
+	
+	ExampleTag(final String name, final SameRuleAs ruleRef) {
+		this.data = new TagData(name, ruleRef);
 	}
 	
 	// Interface:Tag :::
@@ -76,6 +94,16 @@ public enum ExampleTag implements Tag {
 	@Override
 	public boolean match(final String candidate) {
 		return data.match(candidate);
+	}
+
+	@Override
+	public boolean shouldSkip() {
+		return this.data.shouldSkip();
+	}
+
+	@Override
+	public SameRuleAs ruleRef() {
+		return data.ruleRef();
 	}
 	
 }

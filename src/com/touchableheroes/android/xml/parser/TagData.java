@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.touchableheroes.android.log.Logger;
+import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 
 
 /**
@@ -28,6 +29,10 @@ public class TagData implements Tag {
 	private final boolean isPattern;
 	
 	private final Pattern pattern;
+	
+	private final boolean skip;
+	
+	private final SameRuleAs ruleRef;
 
 	/**
 	 * This constructor will be used as root-tag.
@@ -42,12 +47,35 @@ public class TagData implements Tag {
 		this.children = Tag.DEFAULT.children();
 		
 		this.nameIdx = indexingNames();
+		this.skip = false;
+		this.ruleRef = null;
+	}
+	
+
+	public TagData(final String name, final SameRuleAs ruleRef) {
+		this(null, name, false, ruleRef);
+	}
+	
+	public TagData(final String ns, final String name,
+			final boolean skip) {
+		this(ns, name, true, null, new Tag[0] );
 	}
 
-	public TagData(final String ns, final String name,
+    public TagData(final String ns, final String name,  
 			final Tag... children) {
+    	this(ns, name, false, null, children);
+    }
+    
+    private TagData(final String ns, 
+    		final String name, 
+    		final boolean skip, 
+    		final SameRuleAs ruleRef,
+			final Tag... children) {
+    	
 		this.ns = ns;
 		this.name = name;
+		this.skip = skip;
+		this.ruleRef = ruleRef;
 		
 		if( this.ns == null )
 			this.fullName = this.name;
@@ -176,6 +204,17 @@ public class TagData implements Tag {
 	@Override
 	public boolean isPattern() {
 		return this.isPattern ;
+	}
+
+	@Override
+	public boolean shouldSkip() {
+		return this.skip;
+	}
+
+
+	@Override
+	public SameRuleAs ruleRef() {
+		return this.ruleRef;
 	}
 
 }

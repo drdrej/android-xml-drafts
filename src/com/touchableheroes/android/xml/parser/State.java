@@ -28,9 +28,6 @@ public class State {
 			Logger.debug("-- path: " + path);
 		}
 
-//		if (TagUtils.isText(tag))
-//			return;
-
 		path.add(tag);
 		depth++;
 	}

@@ -1,5 +1,7 @@
 package com.touchableheroes.android.xml.parser;
 
+import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
+
 /**
  * Declaration of a tag.
  * 
@@ -22,6 +24,12 @@ public interface Tag {
 	public boolean isPattern();
 	
 	public boolean match(final String candidate);
+	
+	public boolean shouldSkip();
+	
+	public SameRuleAs ruleRef();
+	
+	
 	
 	static class DefaultTag implements Tag {
 
@@ -68,6 +76,16 @@ public interface Tag {
 		@Override
 		public boolean match(final String candidate) {
 			return false;
+		}
+
+		@Override
+		public boolean shouldSkip() {
+			return false;
+		}
+
+		@Override
+		public SameRuleAs ruleRef() {
+			return null;
 		}
 	}
 
@@ -123,6 +141,16 @@ public interface Tag {
 		@Override
 		public boolean match(final String candidate) {
 			return false;
+		}
+
+		@Override
+		public boolean shouldSkip() {
+			return false;
+		}
+
+		@Override
+		public SameRuleAs ruleRef() {
+			return null;
 		}
 	}
 

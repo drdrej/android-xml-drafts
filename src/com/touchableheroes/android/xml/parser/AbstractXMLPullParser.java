@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Stack;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -12,6 +13,7 @@ import android.util.Xml;
 
 import com.touchableheroes.android.log.Logger;
 import com.touchableheroes.android.log.Timer;
+import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 
 /**
  * An example how to parse XML with pull-parser in android.
@@ -21,7 +23,10 @@ import com.touchableheroes.android.log.Timer;
  * @author Andreas Siebert, ask@touchableheroes.com
  * 
  */
-public abstract class AbstractXMLPullParser<C extends Callback> implements TagEventHandler<C> {
+public abstract class AbstractXMLPullParser<C extends Callback> implements
+		TagEventHandler<C> {
+
+	private Stack<String> names = new Stack<String>();
 
 	private final State state = new State();
 	private final XmlPullParser parser;
@@ -35,8 +40,8 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 		this.parser = Xml.newPullParser();
 		parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
 		parser.setFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL, false);
-//		parser.setFeature(XmlPullParser.FEATURE_REPORT_NAMESPACE_ATTRIBUTES, false);
-//		parser.setFeature(XmlPullParser.FEATURE_VALIDATION, false);
+
+		names.push(root.fullName());
 	}
 
 	/**
@@ -48,16 +53,16 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 	public void parse(final InputStream in, final C callback) {
 		try {
 			parser.setInput(in, "UTF-8");
-			readFeed(callback);
+			readXML(callback);
 		} catch (final Throwable tx) {
-			System.out.println("Couldn't read feed.xml");
+			Logger.debug("Couldn't read xml-file");
 			tx.printStackTrace();
 		} finally {
 			closeInSilently(in);
 		}
 	}
 
-	protected void readFeed(final C callback) throws Throwable {
+	protected void readXML(final C callback) throws Throwable {
 		try {
 			visitRoot(callback);
 		} catch (final Throwable t) {
@@ -76,9 +81,6 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 	private void visitChildren(final C callback) throws Throwable {
 		startDoc();
 
-		int open = 0;
-		int close = 0;
-
 		while (isEndOfDoc()) {
 			final Tag current = nextTag(state.parentTag());
 
@@ -88,30 +90,90 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 			switch (parser.getEventType()) {
 			case XmlPullParser.END_TAG:
 				handleCloseTagEvent(callback, current);
-
-				close++;
 				break;
 
 			case XmlPullParser.START_TAG:
-				handleStartTagEvent(callback, current);
+				if (current.shouldSkip())
+					skip(current);
+				else
+					handleStartTagEvent(callback, current);
 
-				open++;
 				break;
 			}
 		}
 
 		closeDoc(callback);
+	}
 
-		if (Logger.isDebug()) {
-			Logger.debug("-- found tags: open = " + open + " / closed = "
-					+ close);
+	/**
+	 * skip tags to ignore. based on googles examples
+	 * 
+	 * @param current
+	 * @throws IOException
+	 * @throws XmlPullParserException
+	 */
+	private void skip(final Tag current) throws XmlPullParserException,
+			IOException {
+		if (parser.getEventType() != XmlPullParser.START_TAG) {
+			throw new IllegalStateException("Couldn't skip: " + current
+					+ " because no start");
 		}
+
+		int depth = 1;
+
+		while (depth != 0) {
+			switch (parser.next()) {
+
+			case XmlPullParser.END_TAG:
+				depth--;
+				break;
+
+			case XmlPullParser.START_TAG:
+				depth++;
+				break;
+			}
+		}
+
+		removeSkipedCandidate(current);
+	}
+
+	private void removeSkipedCandidate(final Tag current) {
+		final String candidate = lastName();
+
+		if (candidate == null)
+			return;
+
+		names.pop();
 	}
 
 	public void handleStartTagEvent(final C callback, final Tag current)
 			throws IOException, XmlPullParserException {
 		getState().openTag(current);
 		startTag(current, callback);
+	}
+
+	/**
+	 * Replace one Tag by another - is heplful to declare tag-references in the
+	 * "tag/state-grammar".
+	 * 
+	 * @param current
+	 * 
+	 * @return same Tag or another one.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Tag replaceBy(final Tag current) {
+		final SameRuleAs ref = current.ruleRef();
+
+		if (ref != null) {
+
+			final Enum openTag = (Enum) current;
+			final Enum replaceBy = Enum.valueOf(openTag.getClass(),
+					ref.stateName());
+
+			return (Tag) replaceBy;
+		} else {
+			return current;
+		}
 	}
 
 	public void handleCloseTagEvent(final C callback, final Tag current)
@@ -145,7 +207,8 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 	}
 
 	public Tag findNextTag(final Tag previousTag) throws Throwable {
-		final Timer methodTimer = Timer.start(this.getClass(), "findNextTag(Tag)");
+		final Timer methodTimer = Timer.start(this.getClass(),
+				"findNextTag(Tag)");
 
 		try {
 			return execFindNextTag(previousTag);
@@ -163,33 +226,85 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 
 		while ((parser.getEventType() != XmlPullParser.END_DOCUMENT)) {
 			switch (parser.getEventType()) {
+
 			case XmlPullParser.START_TAG:
-				final Tag tag = TagUtils.identify(previousTag,
-						parser.getName());
+				return prepareStartTag(previousTag);
 
-				logIdentifiedStartTag(tag);
-				
-				return tag;
 			case XmlPullParser.END_TAG:
-				final Tag parentTag = state.parentTag();
-				if (parentTag == null) {
-					return null;
-				}
-
-				final String currentFullName = parser.getName();
-				final boolean isCandidate = TagUtils.isCandidate(parentTag, currentFullName);
-
-				if (isCandidate)
-					return parentTag;
-
-				logIdentifiedCloseTag(parentTag);
-				return null;
+				return prepareEndTag();
+				
 			}
 
 			parser.next();
 		}
 
 		return null;
+	}
+
+	private Tag prepareEndTag() throws XmlPullParserException {
+		final String candidate = lastName();
+
+		if (candidate == null)
+			return null;
+
+		names.pop(); // reset stack of names
+
+		final Tag parent = state.parentTag();
+
+		if (parent == null)
+			return null;
+
+		System.out.println("-- ajnane </" + candidate + "> -> " + parent);
+
+		if (candidate.equals(parent.getName())) {
+			logIdentifiedCloseTag(parent);
+			return parent;
+		}
+
+		return null;
+	}
+
+	private Tag prepareStartTag(final Tag previousTag)
+			throws XmlPullParserException {
+		final String tagName = parser.getName();
+		
+		if( isEmptyTag() ) {
+			return null;
+		}
+		
+		names.push(tagName);
+		Tag use = null;
+		try {
+			use = replaceBy(previousTag);
+		} catch( Throwable x ) {
+			x.printStackTrace();
+		}
+		
+		System.out.println("-- (ajnane) <" + tagName + "> :::  -> " + use
+				+ " for passed parent::: " + previousTag + " --- empty: " + isEmptyTag());
+
+		final Tag tag = TagUtils.identify(use, tagName);
+
+		
+		logIdentifiedStartTag(tag);
+		return tag;
+	}
+
+	private boolean isEmptyTag() {
+		try {
+			return getParser().isEmptyElementTag();
+		} catch (final XmlPullParserException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+
+	private String lastName() {
+		if (names.isEmpty())
+			return null;
+
+		return names.peek();
 	}
 
 	private void logIdentifiedCloseTag(final Tag parentTag)
@@ -226,7 +341,7 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 			result.append(parser.getText());
 		}
 
-		return result.toString();
+		return result.toString().trim();
 	}
 
 	/**
@@ -259,10 +374,11 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 	 * @throws XmlPullParserException
 	 */
 	protected URI readURI() throws IOException, XmlPullParserException {
+		final String txt = readText();
 		try {
-			final String txt = readText();
 			return new URI(txt);
 		} catch (final URISyntaxException exc) {
+			Logger.error("Couldn't read/parse URI: " + txt);
 			return null;
 		}
 	}
@@ -288,15 +404,15 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 
 	public String getAttribute(final String ns, final String name) {
 		final String fullAttrName;
-		
-		if( ns == null )
+
+		if (ns == null)
 			fullAttrName = name;
 		else
 			fullAttrName = ns + ":" + name;
-		
+
 		return getAttribute(fullAttrName);
 	}
-	
+
 	/**
 	 * Reads Boolean from text-value.
 	 * 
@@ -310,21 +426,6 @@ public abstract class AbstractXMLPullParser<C extends Callback> implements TagEv
 			return false;
 		}
 	}
-
-//	/**
-//	 * gets a string-value of an attribute. supports namespace.
-//	 * 
-//	 * @param ns
-//	 * @param attrName
-//	 * 
-//	 * @return
-//	 */
-//	protected String getAttribute(final String ns, final String attrName) {
-//		if (ns == null)
-//			throw new IllegalArgumentException("Namespace is NULL");
-//
-//		return parser.getAttributeValue(ns, attrName);
-//	}
 
 	public void startDoc() throws Throwable {
 		parser.nextTag();

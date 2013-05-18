@@ -1,5 +1,7 @@
 package com.touchableheroes.android.xml.parser;
 
+import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
+
 
 
 /**
@@ -31,22 +33,6 @@ public class TagUtils {
 		return identifyByName2(parent, fullName);
 	}
 
-//	private static Tag identifyByNameInArray(final String fullName, 
-//			final Tag[] candidates) {
-//		for (final Tag candidate : candidates) {
-//			final String candidateName = candidate.getName();
-//
-//			if (candidateName == null)
-//				return null;
-//
-//			if (!isCandidate(candidate, fullName))
-//				continue;
-//
-//			return candidate;
-//		}
-//
-//		return null;
-//	} 
 	
 	/**
 	 * uses this method to identify a child of a tag by name and namespace.
@@ -97,4 +83,29 @@ public class TagUtils {
 		return false;
 	}
 
+	/**
+	 * Replace one Tag by another - is heplful to declare tag-references in the
+	 * "tag/state-grammar".
+	 * 
+	 * @param current
+	 * 
+	 * @return same Tag or another one.
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static Tag replaceBy(final Tag current) {
+		final SameRuleAs ref = current.ruleRef();
+
+		if (ref != null) {
+
+			final Enum openTag = (Enum) current;
+			final Enum replaceBy = Enum.valueOf(openTag.getClass(),
+					ref.stateName());
+
+			return (Tag) replaceBy;
+		} else {
+			return current;
+		}
+	}
+	
+	
 }

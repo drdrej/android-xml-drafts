@@ -2,6 +2,7 @@ package com.touchableheroes.android.xml.parser.example;
 
 import com.touchableheroes.android.xml.parser.Tag;
 import com.touchableheroes.android.xml.parser.TagData;
+import com.touchableheroes.android.xml.parser.ext.Text;
 import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 
 /**
@@ -11,7 +12,7 @@ import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
  */
 public enum ExampleTag implements Tag {
 	
-	ITEMS_PATTERN_ITEM( "item" ),
+	ITEMS_PATTERN_ITEM( "item", Text.ACCEPT ),
 	
 	ITEMS_PATTERN( "?^[a-z][0-9]$", ITEMS_PATTERN_ITEM ),
 	
@@ -19,7 +20,7 @@ public enum ExampleTag implements Tag {
 
 	ITEMS_CHILDREN( "children", new SameRuleAs( "ITEMS" ) ),
 	
-	ITEM( "item" ),
+	ITEM( "item", Text.ACCEPT ),
 	
 	ITEMS( "items", ITEM, ITEMS_CHILDREN, ITEMS_PATTERN, ITEMS_SKIP ),
 	
@@ -40,6 +41,10 @@ public enum ExampleTag implements Tag {
 
 	ExampleTag(final String name, final boolean skip) {
 		this.data = new TagData(null, name, skip);
+	}
+	
+	ExampleTag(final String name, final Text useText) {
+		this.data = new TagData(name, useText);
 	}
 	
 	ExampleTag(final String name, final Tag... children) {
@@ -104,6 +109,11 @@ public enum ExampleTag implements Tag {
 	@Override
 	public SameRuleAs ruleRef() {
 		return data.ruleRef();
+	}
+
+	@Override
+	public boolean handleText() {
+		return data.handleText();
 	}
 	
 }

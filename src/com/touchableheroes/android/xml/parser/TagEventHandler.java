@@ -7,7 +7,7 @@ import org.xmlpull.v1.XmlPullParserException;
 /**
  * @author Andreas Siebert, ask@touchableheroes.com
  */
-public interface TagEventHandler<C extends Callback> {
+public interface TagEventHandler<C extends DomainSpecificBinding> {
 
 	public void handleStartTagEvent(final C callback, final Tag current)
 			throws IOException, XmlPullParserException;

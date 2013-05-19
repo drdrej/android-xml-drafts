@@ -13,13 +13,14 @@ import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 public class XMLEventPipe {
 
 	private final XMLTagFacade facade;
+	
 	private final Stack<TagEvent> stack = new Stack<TagEvent>();
 	private final Stack<Tag> states = new Stack<Tag>();
 	
-	private final XMLTagHandler<? extends Callback> handler;
+	private final XMLTagHandler<? extends DomainSpecificBinding> handler;
 
 	public XMLEventPipe(final XmlPullParser parser,
-			final XMLTagHandler<? extends Callback> handler,
+			final XMLTagHandler<? extends DomainSpecificBinding> handler,
 			final XMLTagFacade facade) {
 		this.handler = handler;
 		this.facade = facade;
@@ -39,9 +40,14 @@ public class XMLEventPipe {
 			return;
 		}
 
+		if( tag.handleText() ) {
+			facade.nextText();
+		} 
+		
 		handleStartTag(tag);
 		states.push(tag);
 	}
+
 
 	private void handleStartTag(final Tag tag) {
 		try {

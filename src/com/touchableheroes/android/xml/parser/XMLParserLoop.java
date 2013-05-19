@@ -28,10 +28,12 @@ public class XMLParserLoop {
 			parser.next();
 
 			if (parser.isStartTag()) {
-				if (parser.isEmptyTag())
-					continue;
-
+				final boolean isEmptyTag = parser.isEmptyTag();
 				pipe.startTag();
+				
+				if ( isEmptyTag )
+					pipe.endTag();
+
 			} else if (parser.isEndTag()) {
 				pipe.endTag();
 			} else if (parser.isText() || parser.isStartOfDoc()
@@ -47,7 +49,7 @@ public class XMLParserLoop {
 	 * @return never NULL
 	 */
 	public static final XMLParserLoop create(
-			final XMLTagHandler<? extends Callback> handler) {
+			final XMLTagHandler<? extends DomainSpecificBinding> handler) {
 		try {
 			final XmlPullParser parser = Xml.newPullParser();
 

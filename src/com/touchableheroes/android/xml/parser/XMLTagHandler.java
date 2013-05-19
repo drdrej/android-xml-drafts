@@ -2,14 +2,13 @@ package com.touchableheroes.android.xml.parser;
 
 import java.io.IOException;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author Andreas Siebert, ask@touchableheroes.com
  * @param <C>
  */
-public abstract class XMLTagHandler<C extends Callback> {
+public abstract class XMLTagHandler<C extends DomainSpecificBinding> {
 
 	private final Tag root;
 	private final C callback;
@@ -42,7 +41,7 @@ public abstract class XMLTagHandler<C extends Callback> {
 			throws Exception;
 	
 	
-	public Callback callback() {
+	public C callback() {
 		return this.callback;
 	}
 

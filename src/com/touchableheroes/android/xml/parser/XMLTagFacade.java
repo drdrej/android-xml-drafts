@@ -12,6 +12,7 @@ import com.touchableheroes.android.log.Logger;
 public class XMLTagFacade {
 
 	private final XmlPullParser parser;
+	private String currentTxt;
 
 	public XMLTagFacade(
 			final XmlPullParser parser) {
@@ -38,14 +39,8 @@ public class XMLTagFacade {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	protected String readText() throws IOException, XmlPullParserException {
-		final StringBuilder result = new StringBuilder(100);
-
-		if (parser.next() == XmlPullParser.TEXT) {
-			result.append(parser.getText());
-		}
-
-		return result.toString().trim();
+	public String readText() throws IOException {
+		return this.currentTxt;
 	}
 
 	/**
@@ -58,7 +53,7 @@ public class XMLTagFacade {
 	 * @throws XmlPullParserException
 	 * @throws IOException
 	 */
-	protected int readTextInt(int defaultVal) throws XmlPullParserException,
+	public int readTextInt(int defaultVal) throws XmlPullParserException,
 			IOException {
 		final String txt = readText();
 
@@ -122,7 +117,7 @@ public class XMLTagFacade {
 	 * 
 	 * @return true or false.
 	 */
-	protected boolean readBoolean() {
+	public boolean readBoolean() {
 		try {
 			final String txt = readText();
 			return Boolean.parseBoolean(txt);
@@ -153,6 +148,35 @@ public class XMLTagFacade {
 				depth++;
 				break;
 			}
+		}
+	}
+
+	/**
+	 * use to extract next text
+	 */
+	public void nextText() {
+		final int currentState = next();
+		
+		if ( currentState == XmlPullParser.TEXT) {
+			currentTxt = parser.getText();
+		} else {
+			currentTxt = null;
+		}
+	}
+
+	public boolean isEndTag() {
+		try {
+			return (parser.getEventType() == XmlPullParser.END_TAG);
+		} catch (final XmlPullParserException e) {
+			throw new IllegalStateException( "Couldn't check event-type.", e);
+		}
+	}
+	
+	public boolean isStartTag() {
+		try {
+			return (parser.getEventType() == XmlPullParser.START_TAG);
+		} catch (final XmlPullParserException e) {
+			throw new IllegalStateException( "Couldn't check event-type.", e);
 		}
 	}
 }

@@ -3,7 +3,7 @@ package com.touchableheroes.android.xml.parser.tag;
 /**
  * @author Andreas Siebert, ask@touchableheroes.com
  */
-public class SameRuleAs {
+public class SameRuleAs implements TagRule {
 
 	private final String state;
 

@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.touchableheroes.android.log.Logger;
+import com.touchableheroes.android.xml.parser.ext.Text;
 import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 
 
@@ -33,6 +34,8 @@ public class TagData implements Tag {
 	private final boolean skip;
 	
 	private final SameRuleAs ruleRef;
+	
+	private final Text handleText;
 
 	/**
 	 * This constructor will be used as root-tag.
@@ -49,40 +52,46 @@ public class TagData implements Tag {
 		this.nameIdx = indexingNames();
 		this.skip = false;
 		this.ruleRef = null;
+		this.handleText = null;
 	}
 	
 
 	public TagData(final String name, final SameRuleAs ruleRef) {
-		this(null, name, false, ruleRef);
+		this(null, name, false, ruleRef, null);
+	}
+	
+	public TagData(final String name, final Text handleTxt) {
+		this(null, name, false, null, handleTxt);
 	}
 	
 	public TagData(final String ns, final String name,
 			final boolean skip) {
-		this(ns, name, true, null, new Tag[0] );
+		this(ns, name, true, null, null, new Tag[0] );
 	}
 
     public TagData(final String ns, final String name,  
 			final Tag... children) {
-    	this(ns, name, false, null, children);
+    	this(ns, name, false, null, null, children);
     }
     
     private TagData(final String ns, 
     		final String name, 
     		final boolean skip, 
     		final SameRuleAs ruleRef,
+    		final Text handleText,
 			final Tag... children) {
     	
 		this.ns = ns;
 		this.name = name;
 		this.skip = skip;
 		this.ruleRef = ruleRef;
+		this.handleText = handleText;
 		
 		if( this.ns == null )
 			this.fullName = this.name;
 		else
 			this.fullName = this.ns + ":" + this.name;
 		
-		// TODO: code umbauen.
 		this.isPattern = this.name.startsWith( "?" );
 		if( isPattern ) {
 			final String patternStr = this.name.substring(1).trim();
@@ -217,4 +226,8 @@ public class TagData implements Tag {
 		return this.ruleRef;
 	}
 
+	
+	public boolean handleText() {
+		return (this.handleText == Text.ACCEPT);
+	}
 }

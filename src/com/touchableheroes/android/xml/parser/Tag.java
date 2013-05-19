@@ -29,6 +29,8 @@ public interface Tag {
 	
 	public SameRuleAs ruleRef();
 	
+	public boolean handleText();
+	
 	
 	
 	static class DefaultTag implements Tag {
@@ -86,6 +88,11 @@ public interface Tag {
 		@Override
 		public SameRuleAs ruleRef() {
 			return null;
+		}
+
+		@Override
+		public boolean handleText() {
+			return false;
 		}
 	}
 
@@ -151,6 +158,11 @@ public interface Tag {
 		@Override
 		public SameRuleAs ruleRef() {
 			return null;
+		}
+		
+		@Override
+		public boolean handleText() {
+			return false;
 		}
 	}
 

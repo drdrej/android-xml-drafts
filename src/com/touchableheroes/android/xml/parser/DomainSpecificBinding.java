@@ -6,6 +6,8 @@ package com.touchableheroes.android.xml.parser;
  * 
  * @author Andreas Siebert, ask@touchableheroes.com
  */
-public interface Callback {
+public interface DomainSpecificBinding<T> {
 
+	public T current();
+	
 }

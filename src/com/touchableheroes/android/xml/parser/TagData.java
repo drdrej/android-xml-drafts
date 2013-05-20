@@ -74,7 +74,7 @@ public class TagData implements Tag {
     	this(ns, name, false, null, null, children);
     }
     
-    private TagData(final String ns, 
+    public TagData(final String ns, 
     		final String name, 
     		final boolean skip, 
     		final SameRuleAs ruleRef,

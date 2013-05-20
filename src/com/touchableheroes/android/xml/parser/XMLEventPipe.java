@@ -5,7 +5,6 @@ import java.util.Stack;
 import org.xmlpull.v1.XmlPullParser;
 
 import com.touchableheroes.android.log.Logger;
-import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
 
 /**
  * @author Andreas Siebert, ask@touchableheroes.com
@@ -40,6 +39,7 @@ public class XMLEventPipe {
 			return;
 		}
 
+		facade.resetText();
 		if( tag.handleText() ) {
 			facade.nextText();
 		} 

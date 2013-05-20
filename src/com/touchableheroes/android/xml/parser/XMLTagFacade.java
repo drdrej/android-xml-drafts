@@ -40,6 +40,9 @@ public class XMLTagFacade {
 	 * @throws XmlPullParserException
 	 */
 	public String readText() throws IOException {
+		if( currentTxt == null )
+			throw new IllegalStateException( "Tag must ACCEPT text to call this function in parser.");
+		
 		return this.currentTxt;
 	}
 
@@ -72,7 +75,7 @@ public class XMLTagFacade {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	protected URI readURI() throws IOException, XmlPullParserException {
+	public URI readURI() throws IOException, XmlPullParserException {
 		final String txt = readText();
 		try {
 			return new URI(txt);
@@ -160,7 +163,7 @@ public class XMLTagFacade {
 		if ( currentState == XmlPullParser.TEXT) {
 			currentTxt = parser.getText();
 		} else {
-			currentTxt = null;
+			currentTxt = "";
 		}
 	}
 
@@ -178,5 +181,9 @@ public class XMLTagFacade {
 		} catch (final XmlPullParserException e) {
 			throw new IllegalStateException( "Couldn't check event-type.", e);
 		}
+	}
+
+	public void resetText() {
+		currentTxt = null;
 	}
 }

@@ -30,15 +30,17 @@ public class XMLEventPipe {
 		final TagEvent event = TagEvent.create(facade.tagName(), tag);
 		stack.push(event);
 		
-		if( tag == null )
+		if( tag == null ) {
 			return;
+		}
 
 		// in endtag:
 		if (tag.shouldSkip()) {
 			facade.skip();
+			stack.pop();
 			return;
 		}
-
+		
 		prepareAttributes();
 		prepareText(isEmptyTag, tag); 
 		

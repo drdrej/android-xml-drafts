@@ -47,7 +47,6 @@ public class XMLEventPipe {
 		} 
 		
 		handleStartTag(tag);
-//		states.push(tag);
 	}
 
 
@@ -81,11 +80,6 @@ public class XMLEventPipe {
 	}
 
 	private Tag parentTag() {
-//		if( states.isEmpty() )
-//			throw new IllegalStateException( "Couldn't call parentTag() - stack is empty." );
-//		
-//		return states.peek();
-		
 		if( stack.isEmpty() )
 			throw new IllegalStateException( "Couldn't call parentTag() - stack is empty." );
 		
@@ -114,11 +108,6 @@ public class XMLEventPipe {
 
 		if( current.tag != null )
 			handleEndTag(current);
-		
-//		final Tag parent = states.peek();
-//		
-//		if( parent == current.tag )
-//			states.pop();
 	}
 
 	private void handleEndTag(final TagEvent current) {

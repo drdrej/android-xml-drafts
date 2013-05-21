@@ -62,7 +62,6 @@ public class TagUtils {
 		}
 		
 		return null;
-//		return identifyByNameInArray(fullName, patterns);
 	}
 
 	

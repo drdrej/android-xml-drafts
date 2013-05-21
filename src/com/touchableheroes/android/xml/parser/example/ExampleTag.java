@@ -2,8 +2,8 @@ package com.touchableheroes.android.xml.parser.example;
 
 import com.touchableheroes.android.xml.parser.Tag;
 import com.touchableheroes.android.xml.parser.TagData;
-import com.touchableheroes.android.xml.parser.ext.Text;
-import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
+import com.touchableheroes.android.xml.parser.tag.SameTagAs;
+import com.touchableheroes.android.xml.parser.tag.Text;
 
 /**
  * An example how to declare states of the parser.
@@ -18,7 +18,7 @@ public enum ExampleTag implements Tag {
 	
 	ITEMS_SKIP( "skip", true ),
 
-	ITEMS_CHILDREN( "children", new SameRuleAs( "ITEMS" ) ),
+	ITEMS_CHILDREN( "children", new SameTagAs( "ITEMS" ) ),
 	
 	ITEM( "item", Text.ACCEPT ),
 	
@@ -51,7 +51,7 @@ public enum ExampleTag implements Tag {
 		this.data = new TagData(null, name, children);
 	}
 	
-	ExampleTag(final String name, final SameRuleAs ruleRef) {
+	ExampleTag(final String name, final SameTagAs ruleRef) {
 		this.data = new TagData(name, ruleRef);
 	}
 	
@@ -107,7 +107,7 @@ public enum ExampleTag implements Tag {
 	}
 
 	@Override
-	public SameRuleAs ruleRef() {
+	public SameTagAs ruleRef() {
 		return data.ruleRef();
 	}
 

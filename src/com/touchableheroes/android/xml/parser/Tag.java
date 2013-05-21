@@ -1,6 +1,6 @@
 package com.touchableheroes.android.xml.parser;
 
-import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
+import com.touchableheroes.android.xml.parser.tag.SameTagAs;
 
 /**
  * Declaration of a tag.
@@ -27,7 +27,7 @@ public interface Tag {
 	
 	public boolean shouldSkip();
 	
-	public SameRuleAs ruleRef();
+	public SameTagAs ruleRef();
 	
 	public boolean handleText();
 	
@@ -86,7 +86,7 @@ public interface Tag {
 		}
 
 		@Override
-		public SameRuleAs ruleRef() {
+		public SameTagAs ruleRef() {
 			return null;
 		}
 
@@ -156,7 +156,7 @@ public interface Tag {
 		}
 
 		@Override
-		public SameRuleAs ruleRef() {
+		public SameTagAs ruleRef() {
 			return null;
 		}
 		

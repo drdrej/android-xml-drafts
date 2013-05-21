@@ -9,8 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.touchableheroes.android.log.Logger;
-import com.touchableheroes.android.xml.parser.ext.Text;
-import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
+import com.touchableheroes.android.xml.parser.tag.SameTagAs;
+import com.touchableheroes.android.xml.parser.tag.Text;
 
 
 /**
@@ -33,7 +33,7 @@ public class TagData implements Tag {
 	
 	private final boolean skip;
 	
-	private final SameRuleAs ruleRef;
+	private final SameTagAs ruleRef;
 	
 	private final Text handleText;
 
@@ -56,7 +56,7 @@ public class TagData implements Tag {
 	}
 	
 
-	public TagData(final String name, final SameRuleAs ruleRef) {
+	public TagData(final String name, final SameTagAs ruleRef) {
 		this(null, name, false, ruleRef, null);
 	}
 	
@@ -77,7 +77,7 @@ public class TagData implements Tag {
     public TagData(final String ns, 
     		final String name, 
     		final boolean skip, 
-    		final SameRuleAs ruleRef,
+    		final SameTagAs ruleRef,
     		final Text handleText,
 			final Tag... children) {
     	
@@ -222,7 +222,7 @@ public class TagData implements Tag {
 
 
 	@Override
-	public SameRuleAs ruleRef() {
+	public SameTagAs ruleRef() {
 		return this.ruleRef;
 	}
 

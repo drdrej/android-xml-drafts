@@ -12,13 +12,16 @@ import com.touchableheroes.android.log.Logger;
 public class XMLTagFacade {
 
 	private final XmlPullParser parser;
+	
+	private final Attributes attributes;
+	
 	private String currentTxt;
 
-	public XMLTagFacade(
-			final XmlPullParser parser) {
+	public XMLTagFacade(final XmlPullParser parser) {
 		this.parser = parser;
+		this.attributes = new Attributes(parser);
 	}
-	
+
 	public String tagName() {
 		return parser.getName();
 	}
@@ -27,11 +30,11 @@ public class XMLTagFacade {
 		try {
 			return parser.next();
 		} catch (final Throwable x) {
-			throw new IllegalStateException(
-				"Couldn't exec next() on parser.", x);
+			throw new IllegalStateException("Couldn't exec next() on parser.",
+					x);
 		}
 	}
-	
+
 	/**
 	 * reads the text/value of a tag.
 	 * 
@@ -40,9 +43,10 @@ public class XMLTagFacade {
 	 * @throws XmlPullParserException
 	 */
 	public String readText() throws IOException {
-		if( currentTxt == null )
-			throw new IllegalStateException( "Tag must ACCEPT text to call this function in parser.");
-		
+		if (currentTxt == null)
+			throw new IllegalStateException(
+					"Tag must ACCEPT text to call this function in parser.");
+
 		return this.currentTxt;
 	}
 
@@ -85,35 +89,6 @@ public class XMLTagFacade {
 		}
 	}
 
-	/**
-	 * gets a string-value of an attribute.
-	 * 
-	 * @param attrName
-	 * @return
-	 */
-	public String getAttribute(final String fullAttrName) {
-		final int length = parser.getAttributeCount();
-
-		for (int i = 0; i < length; i++) {
-			final String name = parser.getAttributeName(i);
-
-			if (fullAttrName.equals(name))
-				return parser.getAttributeValue(i);
-		}
-
-		return null;
-	}
-
-	public String getAttribute(final String ns, final String name) {
-		final String fullAttrName;
-
-		if (ns == null)
-			fullAttrName = name;
-		else
-			fullAttrName = ns + ":" + name;
-
-		return getAttribute(fullAttrName);
-	}
 
 	/**
 	 * Reads Boolean from text-value.
@@ -128,7 +103,6 @@ public class XMLTagFacade {
 			return false;
 		}
 	}
-	
 
 	/**
 	 * skip tags to ignore. based on googles examples
@@ -154,13 +128,16 @@ public class XMLTagFacade {
 		}
 	}
 
+	
 	/**
 	 * use to extract next text
 	 */
 	public void nextText() {
+		int attributes = parser.getAttributeCount();
+		System.out.println("-- count attributes 1:" + attributes + " <" + parser.getName() + " " + parser.getAttributeValue(null, "name") );
 		final int currentState = next();
-		
-		if ( currentState == XmlPullParser.TEXT) {
+
+		if (currentState == XmlPullParser.TEXT) {
 			currentTxt = parser.getText();
 		} else {
 			currentTxt = "";
@@ -171,19 +148,33 @@ public class XMLTagFacade {
 		try {
 			return (parser.getEventType() == XmlPullParser.END_TAG);
 		} catch (final XmlPullParserException e) {
-			throw new IllegalStateException( "Couldn't check event-type.", e);
+			throw new IllegalStateException("Couldn't check event-type.", e);
 		}
 	}
-	
+
 	public boolean isStartTag() {
 		try {
 			return (parser.getEventType() == XmlPullParser.START_TAG);
 		} catch (final XmlPullParserException e) {
-			throw new IllegalStateException( "Couldn't check event-type.", e);
+			throw new IllegalStateException("Couldn't check event-type.", e);
 		}
 	}
 
 	public void resetText() {
 		currentTxt = null;
 	}
+
+	public void resetAttributes() {
+		attributes.resetAttributes();
+	}
+
+	public void catchAttributes() {
+		attributes.catchAttributes();
+	}
+	
+	public String getAttribute(final String fullAttrName) {
+		return attributes.getAttribute(fullAttrName);
+	}
+
+
 }

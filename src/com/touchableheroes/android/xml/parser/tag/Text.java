@@ -1,4 +1,4 @@
-package com.touchableheroes.android.xml.parser.ext;
+package com.touchableheroes.android.xml.parser.tag;
 
 /**
  * @author Andreas Siebert, ask@touchableheroes.com

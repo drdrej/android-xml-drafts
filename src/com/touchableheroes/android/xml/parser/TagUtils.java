@@ -1,6 +1,6 @@
 package com.touchableheroes.android.xml.parser;
 
-import com.touchableheroes.android.xml.parser.tag.SameRuleAs;
+import com.touchableheroes.android.xml.parser.tag.SameTagAs;
 
 
 
@@ -93,7 +93,7 @@ public class TagUtils {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Tag replaceBy(final Tag current) {
-		final SameRuleAs ref = current.ruleRef();
+		final SameTagAs ref = current.ruleRef();
 
 		if (ref != null) {
 

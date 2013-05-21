@@ -14,7 +14,6 @@ public class XMLEventPipe {
 	private final XMLTagFacade facade;
 	
 	private final Stack<TagEvent> stack = new Stack<TagEvent>();
-	private final Stack<Tag> states = new Stack<Tag>();
 	
 	private final XMLTagHandler<? extends DomainSpecificBinding> handler;
 
@@ -39,13 +38,16 @@ public class XMLEventPipe {
 			return;
 		}
 
+		facade.resetAttributes();
+		facade.catchAttributes();
+		
 		facade.resetText();
 		if( tag.handleText() ) {
 			facade.nextText();
 		} 
 		
 		handleStartTag(tag);
-		states.push(tag);
+//		states.push(tag);
 	}
 
 
@@ -79,10 +81,19 @@ public class XMLEventPipe {
 	}
 
 	private Tag parentTag() {
-		if( states.isEmpty() )
+//		if( states.isEmpty() )
+//			throw new IllegalStateException( "Couldn't call parentTag() - stack is empty." );
+//		
+//		return states.peek();
+		
+		if( stack.isEmpty() )
 			throw new IllegalStateException( "Couldn't call parentTag() - stack is empty." );
 		
-		return states.peek();
+		 final TagEvent event = stack.peek();
+		 if( event == null )
+			 return null;
+		 
+		 return event.tag;
 	}
 
 	private Tag identifyRoot() {
@@ -104,10 +115,10 @@ public class XMLEventPipe {
 		if( current.tag != null )
 			handleEndTag(current);
 		
-		final Tag parent = states.peek();
-		
-		if( parent == current.tag )
-			states.pop();
+//		final Tag parent = states.peek();
+//		
+//		if( parent == current.tag )
+//			states.pop();
 	}
 
 	private void handleEndTag(final TagEvent current) {

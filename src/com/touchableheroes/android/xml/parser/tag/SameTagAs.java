@@ -3,11 +3,11 @@ package com.touchableheroes.android.xml.parser.tag;
 /**
  * @author Andreas Siebert, ask@touchableheroes.com
  */
-public class SameRuleAs implements TagRule {
+public class SameTagAs implements TagRule {
 
 	private final String state;
 
-	public SameRuleAs(final String stateName) {
+	public SameTagAs(final String stateName) {
 	   this.state = stateName;	
 	}
 	

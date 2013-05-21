@@ -55,7 +55,7 @@ public class XMLParserLoop {
 
 			parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
 			parser.setFeature(XmlPullParser.FEATURE_PROCESS_DOCDECL, false);
-
+//			parser.setFeature(XmlPullParser.FEATURE_REPORT_NAMESPACE_ATTRIBUTES, true);
 			final XMLParserFacade facade = new XMLParserFacade(parser);
 
 			return new XMLParserLoop(facade, new XMLEventPipe(parser, handler,

@@ -24,29 +24,40 @@ public class XMLEventPipe {
 		this.facade = facade;
 	}
 
-	public void startTag() {
+	public void startTag(final boolean isEmptyTag) {
 		final Tag tag = identifyTag();
 
 		final TagEvent event = TagEvent.create(facade.tagName(), tag);
 		stack.push(event);
-
+		
 		if( tag == null )
 			return;
-		
+
+		// in endtag:
 		if (tag.shouldSkip()) {
 			facade.skip();
 			return;
 		}
 
-		facade.resetAttributes();
-		facade.catchAttributes();
-		
-		facade.resetText();
-		if( tag.handleText() ) {
-			facade.nextText();
-		} 
+		prepareAttributes();
+		prepareText(isEmptyTag, tag); 
 		
 		handleStartTag(tag);
+	}
+
+	private void prepareAttributes() {
+		facade.resetAttributes();
+		facade.catchAttributes();
+	}
+
+	private void prepareText(final boolean isEmptyTag, final Tag tag) {
+		facade.resetText();
+		if( tag.handleText() ) {
+			if( isEmptyTag )
+				facade.useDefaultText();
+			else
+				facade.nextText();
+		}
 	}
 
 
@@ -106,8 +117,13 @@ public class XMLEventPipe {
 	public void endTag() {
 		final TagEvent current = stack.pop();
 
-		if( current.tag != null )
-			handleEndTag(current);
+		if( current.tag == null )
+			return;
+		
+		if( current.tag.shouldSkip() )
+			return;
+		
+		handleEndTag(current);
 	}
 
 	private void handleEndTag(final TagEvent current) {

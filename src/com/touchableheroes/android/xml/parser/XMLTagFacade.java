@@ -112,6 +112,8 @@ public class XMLTagFacade {
 	 * @throws XmlPullParserException
 	 */
 	public void skip() {
+		final String tagName = tagName();
+		
 		int depth = 1;
 
 		while (depth != 0) {
@@ -133,8 +135,6 @@ public class XMLTagFacade {
 	 * use to extract next text
 	 */
 	public void nextText() {
-		int attributes = parser.getAttributeCount();
-		System.out.println("-- count attributes 1:" + attributes + " <" + parser.getName() + " " + parser.getAttributeValue(null, "name") );
 		final int currentState = next();
 
 		if (currentState == XmlPullParser.TEXT) {
@@ -142,6 +142,10 @@ public class XMLTagFacade {
 		} else {
 			currentTxt = "";
 		}
+	}
+	
+	public void useDefaultText() {
+		currentTxt = "";
 	}
 
 	public boolean isEndTag() {

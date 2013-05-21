@@ -29,11 +29,7 @@ public class XMLParserLoop {
 
 			if (parser.isStartTag()) {
 				final boolean isEmptyTag = parser.isEmptyTag();
-				pipe.startTag();
-				
-				if ( isEmptyTag )
-					pipe.endTag();
-
+				pipe.startTag(isEmptyTag);
 			} else if (parser.isEndTag()) {
 				pipe.endTag();
 			} else if (parser.isText() || parser.isStartOfDoc()

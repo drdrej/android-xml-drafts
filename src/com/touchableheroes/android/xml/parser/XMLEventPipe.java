@@ -37,12 +37,14 @@ public class XMLEventPipe {
 		// in endtag:
 		if (tag.shouldSkip()) {
 			facade.skip();
-			stack.pop();
+			endTag();
+			
 			return;
 		}
 		
 		prepareAttributes();
 		prepareText(isEmptyTag, tag); 
+		
 		
 		handleStartTag(tag);
 	}
@@ -55,10 +57,15 @@ public class XMLEventPipe {
 	private void prepareText(final boolean isEmptyTag, final Tag tag) {
 		facade.resetText();
 		if( tag.handleText() ) {
-			if( isEmptyTag )
+			if( isEmptyTag ) {
 				facade.useDefaultText();
-			else
+		    } else {
 				facade.nextText();
+				final String txt = facade.readText();
+				
+				if( facade.isEndTag() )
+					endTag();
+			}
 		}
 	}
 

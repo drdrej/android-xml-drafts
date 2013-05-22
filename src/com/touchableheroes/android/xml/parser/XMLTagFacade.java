@@ -42,7 +42,7 @@ public class XMLTagFacade {
 	 * @throws IOException
 	 * @throws XmlPullParserException
 	 */
-	public String readText() throws IOException {
+	public String readText() {
 		if (currentTxt == null)
 			throw new IllegalStateException(
 					"Tag must ACCEPT text to call this function in parser.");
@@ -112,8 +112,6 @@ public class XMLTagFacade {
 	 * @throws XmlPullParserException
 	 */
 	public void skip() {
-		final String tagName = tagName();
-		
 		int depth = 1;
 
 		while (depth != 0) {
@@ -139,6 +137,11 @@ public class XMLTagFacade {
 
 		if (currentState == XmlPullParser.TEXT) {
 			currentTxt = parser.getText();
+			
+			if( currentTxt == null )
+				currentTxt = "";
+			else 
+				currentTxt = currentTxt.trim();
 		} else {
 			currentTxt = "";
 		}

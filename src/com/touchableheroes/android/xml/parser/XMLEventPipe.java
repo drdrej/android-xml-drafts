@@ -34,7 +34,6 @@ public class XMLEventPipe {
 			return;
 		}
 
-		// in endtag:
 		if (tag.shouldSkip()) {
 			facade.skip();
 			endTag();
@@ -46,8 +45,7 @@ public class XMLEventPipe {
 		prepareText(isEmptyTag, tag); 
 		
 		handleStartTag(tag);
-//		final String txt = facade.readText();
-//		
+
 		if( facade.isEndTag() )
 			endTag();
 	}

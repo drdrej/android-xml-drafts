@@ -45,8 +45,11 @@ public class XMLEventPipe {
 		prepareAttributes();
 		prepareText(isEmptyTag, tag); 
 		
-		
 		handleStartTag(tag);
+//		final String txt = facade.readText();
+//		
+		if( facade.isEndTag() )
+			endTag();
 	}
 
 	private void prepareAttributes() {
@@ -61,10 +64,6 @@ public class XMLEventPipe {
 				facade.useDefaultText();
 		    } else {
 				facade.nextText();
-				final String txt = facade.readText();
-				
-				if( facade.isEndTag() )
-					endTag();
 			}
 		}
 	}

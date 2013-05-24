@@ -101,7 +101,70 @@ public enum ExampleTag implements Tag {
 
 ### Parser
 
-### Callback
+**How-to**: follow these steps to use xml-parse.
+
+1. declare xml-tag-andler.
+2. declare domain spcific binding.
+3. load parser.
+4. bind input-stream.
+5. parse. 
+
+
+**Example**: declare xml-tag-handler.
+
+```java
+
+		final List<String> names = ...;
+		final List<String> values = ...;
+
+
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final XMLTagHandler tagHandler = new XMLTagHandler(ExampleTag.ROOT, callback) {
+			
+			@Override
+			protected void startTag(final Tag current, final XMLTagFacade facade)
+					throws Exception {
+				
+				if( current == ExampleTag.ITEM ) {
+					names.add( facade.getAttribute("name" ) );
+					values.add( facade.readText() );
+				}
+				
+				if( current == ExampleTag.ITEMS_PATTERN_ITEM ) {
+					names.add( facade.getAttribute( "name" ));
+					values.add( facade.readText() );
+				}
+					
+			}
+
+			@Override
+			protected void closeTag(Tag current) throws Exception {
+				;
+			}
+		};
+```
+
+**Example**: declare domain-specific-binding.
+
+```java
+
+
+```
+
+
+**Example**: load and run parser.
+
+```java
+        final InpuStream in = ...;
+
+		@SuppressWarnings("unchecked")
+		final XMLParserLoop loop = XMLParserLoop.create( tagHandler  );
+		
+		loop.useInput( in );
+		loop.run();
+
+```
+
 
 
 ## License: 

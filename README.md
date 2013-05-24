@@ -13,27 +13,36 @@ I've collected my expirience about it an pushed to this project.
 ## Philosophy 
 1. declaration over programming. 
 2. types over strings.
+3. easy to use.
+4. should be fast as possible and use low as possible memory.
+
+
 
 ## Features
 1. based on XmlPullParser.
 2. hide parser logic.
 3. generate states based on enums.
-4. you can bind a callback-object to parser to handle states.
-5. parser has only 2 abstract methods (startTag() vs. endTag() ).
+4. you can bind a callback-object to parser to handle states (called domain-specific-binding)
+5. parser has only 2 abstract methods (startTag() vs. endTag()).
 6. no special language need to learn - java is enough.
 
 
 ## Usage
 
 Before you start to write a parser, you need to open your xml-file and 
-plan/identify parser-states. 
+plan/identify parser-states. To understand the functionality imagine you need to parse
+item-tags in a given xml, skip some some tags and ignore unknown-tags. F.e. you want 
+to collect names and content (text) of these item-tags in a list. In the following 
+example I show you how you can write a parser to do this kind of work. Bevore we start 
+you need an xml-file. 
+
 
 ### XML-document
 
-1. all kind of xml accepted by xml-pull-parser.
-2. you need to the states.
+This parser accepts all kind of xml that is accepted by an xml-pull-parser.
+So you can create a file with the structure like in the following example.
 
-**Example**:
+**Example**: create an xml-file.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -114,10 +123,6 @@ public enum ExampleTag implements Tag {
 
 ```java
 
-		final List<String> names = ...;
-		final List<String> values = ...;
-
-
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final XMLTagHandler tagHandler = new XMLTagHandler(ExampleTag.ROOT, callback) {
 			
@@ -126,8 +131,10 @@ public enum ExampleTag implements Tag {
 					throws Exception {
 				
 				if( current == ExampleTag.ITEM ) {
-					names.add( facade.getAttribute("name" ) );
-					values.add( facade.readText() );
+					callback.onItem( 
+					    facade.getAttribute("name" ),
+					    facade.readText()
+					);
 				}
 				
 				if( current == ExampleTag.ITEMS_PATTERN_ITEM ) {
@@ -147,6 +154,19 @@ public enum ExampleTag implements Tag {
 **Example**: declare domain-specific-binding.
 
 ```java
+
+class CollectNames implements DomainSpecificBinding {
+
+
+		final List<String> names = ...;
+		final List<String> values = ...;
+
+		public void onItem( final String name, final String content ) {
+			names.add( name );
+			values.add( value );
+		}
+		
+}
 
 
 ```

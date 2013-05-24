@@ -3,10 +3,8 @@ Drafts & Examples to handle XML in Android™.
 
 [![endorse](https://api.coderwall.com/drdrej/endorsecount.png)](https://coderwall.com/drdrej)
 
-This project is an example of how to use an xml-pull-parser in Android™-SDK.
-I've collected my expirience about it an pushed to this project.
-
-... and **it is a small framework to handle xml** in Android™ with pull-parser easier.
+This project is an example of how to use an xml-pull-parser in Android™-SDK
+and **it is a small framework to handle xml** in Android™ with pull-parser easier.
 
 **Name**: xml-drafts - **Version**: 0.9 -  Copyright © 2013 Andreas Siebert.
 

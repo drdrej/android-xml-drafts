@@ -8,9 +8,10 @@ I've collected my expirience about it an pushed to this project.
 
 ... and **it is a small framework to handle xml** in Android™ with pull-parser easier.
 
-**Name**: xml-drafts - **Version**: 0.9
+**Name**: xml-drafts - **Version**: 0.9 -  Copyright © 2013 Andreas Siebert.
 
-this project is open-source and free, so if you use it or simply like it you are welcome to donate.
+
+This project is open-source and free, so if you use it or simply like it you are welcome to donate.
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7GL3MAY2KYLG)
 
 

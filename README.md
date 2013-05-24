@@ -133,18 +133,14 @@ public enum ExampleTag implements Tag {
 			protected void startTag(final Tag current, final XMLTagFacade facade)
 					throws Exception {
 				
-				if( current == ExampleTag.ITEM ) {
+				if( current == ExampleTag.ITEM 
+				    || current == ExampleTag.ITEMS_PATTERN_ITEM ) {
 					callback.onItem( 
 					    facade.getAttribute("name" ),
 					    facade.readText()
 					);
 				}
-				
-				if( current == ExampleTag.ITEMS_PATTERN_ITEM ) {
-					names.add( facade.getAttribute( "name" ));
-					values.add( facade.readText() );
-				}
-					
+
 			}
 
 			@Override

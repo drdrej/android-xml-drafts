@@ -33,6 +33,36 @@ plan/identify parser-states.
 1. all kind of xml accepted by xml-pull-parser.
 2. you need to the states.
 
+**Example**:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+   <items>
+      
+	  <children> <!-- identify children tags -->
+	       <item name="item1">text1</item>
+	  </children>
+	  
+	  <item name="item2" >text2</item>
+
+	  <i1> <!-- identify tag by pattern: -->
+	      <item name="item3">text3</item>
+	  </i1>
+	  	  
+      <ns:unknown />
+	  
+      <skip> <!-- skip because declared to skip -->
+         <item name="item4" >text4</item>
+      </skip>
+            
+   </items>
+</root>
+
+```
+
+
 ### States & Tags
 
 1. create an enum

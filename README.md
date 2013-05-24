@@ -9,6 +9,9 @@ I've collected my expirience about it an pushed to this project.
 
 ... and **it is a small framework to handle xml** in android with pull-parser easier.
 
+**Name**: xml-drafts
+**Version**: 0.9
+
 
 ## Philosophy 
 1. declaration over programming. 
@@ -191,6 +194,10 @@ class CollectNames implements DomainSpecificBinding {
 Apache License
 http://www.apache.org/licenses/LICENSE-2.0.html
 
-you can use it in commercial or private projects. you are free to help and to support.
+you can use it in commercial or private projects. 
+you are free to help and to support!
+
+use it and have fun!
+   Andreas Siebert *(aka drdrej)*
 
 

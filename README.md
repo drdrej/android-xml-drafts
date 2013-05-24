@@ -17,7 +17,7 @@ I've collected my expirience about it an pushed to this project.
 1. declaration over programming. 
 2. types over strings.
 3. easy to use.
-4. should be fast as possible and use low as possible memory.
+4. should be fast as possible and use less memory as possible.
 
 
 

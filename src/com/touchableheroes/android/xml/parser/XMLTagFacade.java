@@ -81,6 +81,10 @@ public class XMLTagFacade {
 	 */
 	public URI readURI() throws IOException, XmlPullParserException {
 		final String txt = readText();
+		
+		if( txt == null || txt.length() < 1 )
+			return null;
+		
 		try {
 			return new URI(txt);
 		} catch (final URISyntaxException exc) {

@@ -1,15 +1,16 @@
 Drafts & Examples to handle XML in Android™.
 ===========================================
 
-[![endorse](https://api.coderwall.com/drdrej/endorsecount.png)](https://coderwall.com/drdrej)
+![xml-drafts-logo](https://github.com/drdrej/android-xml-drafts/blob/master/xml-drafts-logo.png?raw=true "xml-drafts")   
+This project is an example of how to use an xml-pull-parser in Android™-SDK   
+and **it is a small framework to handle xml** in Android™ with pull-parser easier.   
 
-This project is an example of how to use an xml-pull-parser in Android™-SDK
-and **it is a small framework to handle xml** in Android™ with pull-parser easier.
+**Name**: xml-drafts   
+**Version**: 0.9   
+**Copyright:** © 2013 Andreas Siebert.   
 
-**Name**: xml-drafts - **Version**: 0.9 -  Copyright © 2013 Andreas Siebert.
 
-
-This project is open-source and free, so if you use it or simply like it you are welcome to donate.
+This project is open-source and free, so if you use it or simply like it you are welcome to donate.   
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=D7GL3MAY2KYLG)
 
 
@@ -190,10 +191,10 @@ class CollectNames implements DomainSpecificBinding {
 Apache License
 http://www.apache.org/licenses/LICENSE-2.0.html
 
-you can use it in commercial or private projects. 
-you are free to help and to support!
+You can use it in commercial or private projects and you are free to help and to support!
 
-use it and have fun!
-   Andreas Siebert *(aka drdrej)*
+develop software and have fun!   
+   Andreas Siebert *(aka drdrej)*   
+   [![endorse](https://api.coderwall.com/drdrej/endorsecount.png)](https://coderwall.com/drdrej)
 
 

@@ -1,57 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="xml-drafts - for Android (tm) : Small framework to use xml in android easy" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>xml-drafts for Android™ by drdrej</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>xml-drafts - for Android (tm)</title>
   </head>
-
   <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/drdrej/android-xml-drafts">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/drdrej/android-xml-drafts/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/drdrej/android-xml-drafts/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/drdrej/android-xml-drafts">View on GitHub</a>
+    <div class="wrapper">
 
-          <h1 id="project_title">xml-drafts - for Android (tm)</h1>
-          <h2 id="project_tagline">Small framework to use xml in android easy</h2>
+      <section>
+        <div id="title">
+          <h1>xml-drafts for Android™</h1>
+          <p>Small framework to use XML in Android™ easy</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/drdrej">drdrej</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></span>
+        </div>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/drdrej/android-xml-drafts/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/drdrej/android-xml-drafts/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
         <h3>
 <a name="welcome-to-xml-drafts" class="anchor" href="#welcome-to-xml-drafts"><span class="octicon octicon-link"></span></a>Welcome to xml-drafts</h3>
 
 <p>This small Android(tm)-Framework is an easy way to write an XML-parser based on an XmlPullParser.
-Download the source-code and use it as Android-library.</p>
+This framework is written by me and open-sourced under Apache license on github. It aims to work with XML and to write less code as possible. Download the source-code and use it as Android-library.</p>
 
-<p>CHECK README FOR MORE INFORMATION!
-Andreas Siebert, 
-ask at touchableheroes.com</p>
+<h4>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting started</h4>
+
+<ol>
+<li>you need an xml:</li>
+</ol><div class="highlight"><pre>      <span class="nt">&lt;root&gt;</span>
+         <span class="nt">&lt;item</span> <span class="na">name=</span><span class="s">"test-name"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/root&gt;</span>
+</pre></div>
+
+<ol>
+<li>
+<p>set up your parser-states:</p>
+
+<div class="highlight"><pre>    <span class="kd">enum</span> <span class="n">States</span> <span class="kd">implements</span> <span class="n">Tag</span> <span class="o">{</span>
+      <span class="n">ITEM</span><span class="o">(</span> <span class="s">"item "</span><span class="o">),</span>
+      <span class="n">ROOT</span><span class="o">(</span> <span class="s">"root"</span><span class="o">,</span> <span class="n">ITEM</span><span class="o">)</span>     
+     <span class="o">...</span>
+   <span class="o">}</span>
+</pre></div>
+</li>
+<li><p>write a parser based on states</p></li>
+</ol><div class="highlight"><pre>          <span class="kd">final</span> <span class="n">XMLTagHandler</span> <span class="n">tagHandler</span> <span class="o">=</span> 
+                              <span class="k">new</span> <span class="nf">XMLTagHandler</span><span class="o">(</span><span class="n">States</span><span class="o">.</span><span class="na">ROOT</span><span class="o">,</span> <span class="n">callback</span><span class="o">)</span> <span class="o">{</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">startTag</span><span class="o">(</span><span class="kd">final</span> <span class="n">Tag</span> <span class="n">current</span><span class="o">,</span> 
+                               <span class="kd">final</span> <span class="n">XMLTagFacade</span> <span class="n">facade</span><span class="o">)</span>
+                    <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+
+                <span class="k">if</span><span class="o">(</span> <span class="n">current</span> <span class="o">==</span> <span class="n">States</span><span class="o">.</span><span class="na">ITEM</span>  <span class="o">)</span> <span class="o">{</span>
+                        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span> <span class="s">"-- found an item: "</span> 
+                           <span class="o">+</span> <span class="n">facade</span><span class="o">.</span><span class="na">getAttribute</span><span class="o">(</span><span class="s">"name"</span> <span class="o">));</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">closeTag</span><span class="o">(</span><span class="n">Tag</span> <span class="n">current</span><span class="o">)</span> 
+                    <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+                <span class="o">;</span>
+            <span class="o">}</span>
+          <span class="o">};</span>
+</pre></div>
+
+<ol>
+<li>
+<p>run a parser</p>
+
+<div class="highlight"><pre>    <span class="kd">final</span> <span class="n">InpuStream</span> <span class="n">in</span> <span class="o">=</span> <span class="o">...;</span>
+    <span class="kd">final</span> <span class="n">XMLParserLoop</span> <span class="n">loop</span> <span class="o">=</span> <span class="n">XMLParserLoop</span><span class="o">.</span><span class="na">create</span><span class="o">(</span> <span class="n">tagHandler</span>  <span class="o">);</span>
+
+    <span class="n">loop</span><span class="o">.</span><span class="na">useInput</span><span class="o">(</span> <span class="n">in</span> <span class="o">);</span>
+    <span class="n">loop</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+</pre></div>
+</li>
+</ol><p>with greetings from Cologne,<br>
+    Andreas Siebert, ask at touchableheroes.com<br>
+    (aka DrDrej)    </p>
+
+<p>CHECK README FOR MORE INFORMATION!</p>
+
+<p>(c) Andreas Siebert, touchbaleheroes.com</p>
       </section>
-    </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">xml-drafts - for Android (tm) maintained by <a href="https://github.com/drdrej">drdrej</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
     </div>
-
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
-
   </body>
 </html>

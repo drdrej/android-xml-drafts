@@ -3,7 +3,7 @@ package com.touchableheroes.android.xml.parser.example;
 import com.touchableheroes.android.xml.parser.Tag;
 import com.touchableheroes.android.xml.parser.TagData;
 import com.touchableheroes.android.xml.parser.tag.SameTagAs;
-import com.touchableheroes.android.xml.parser.tag.Text;
+import com.touchableheroes.android.xml.parser.tag.TagCommand;
 
 /**
  * An example how to declare states of the parser.
@@ -12,7 +12,7 @@ import com.touchableheroes.android.xml.parser.tag.Text;
  */
 public enum ExampleTag implements Tag {
 	
-	ITEMS_PATTERN_ITEM( "item", Text.ACCEPT ),
+	ITEMS_PATTERN_ITEM( "item", TagCommand.ACCEPT ),
 	
 	ITEMS_PATTERN( "?^[a-z][0-9]$", ITEMS_PATTERN_ITEM ),
 	
@@ -20,7 +20,8 @@ public enum ExampleTag implements Tag {
 
 	ITEMS_CHILDREN( "children", new SameTagAs( "ITEMS" ) ),
 	
-	ITEM( "item", Text.ACCEPT ),
+	ITEM( "item", TagCommand.ACCEPT ),
+	
 	
 	ITEMS( "items", ITEM, ITEMS_CHILDREN, ITEMS_PATTERN, ITEMS_SKIP ),
 	
@@ -43,7 +44,7 @@ public enum ExampleTag implements Tag {
 		this.data = new TagData(null, name, skip);
 	}
 	
-	ExampleTag(final String name, final Text useText) {
+	ExampleTag(final String name, final TagCommand useText) {
 		this.data = new TagData(name, useText);
 	}
 	
@@ -114,6 +115,11 @@ public enum ExampleTag implements Tag {
 	@Override
 	public boolean handleText() {
 		return data.handleText();
+	}
+
+	@Override
+	public boolean handleAttributes() {
+		return data.handleAttributes();
 	}
 	
 }

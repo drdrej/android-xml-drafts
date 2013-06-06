@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import com.touchableheroes.android.log.Logger;
 import com.touchableheroes.android.xml.parser.tag.SameTagAs;
-import com.touchableheroes.android.xml.parser.tag.Text;
+import com.touchableheroes.android.xml.parser.tag.TagCommand;
 
 
 /**
@@ -35,7 +35,7 @@ public class TagData implements Tag {
 	
 	private final SameTagAs ruleRef;
 	
-	private final Text handleText;
+	private final TagCommand handleText;
 
 	/**
 	 * This constructor will be used as root-tag.
@@ -60,7 +60,7 @@ public class TagData implements Tag {
 		this(null, name, false, ruleRef, null);
 	}
 	
-	public TagData(final String name, final Text handleTxt) {
+	public TagData(final String name, final TagCommand handleTxt) {
 		this(null, name, false, null, handleTxt);
 	}
 	
@@ -78,7 +78,7 @@ public class TagData implements Tag {
     		final String name, 
     		final boolean skip, 
     		final SameTagAs ruleRef,
-    		final Text handleText,
+    		final TagCommand handleText,
 			final Tag... children) {
     	
 		this.ns = ns;
@@ -228,6 +228,10 @@ public class TagData implements Tag {
 
 	
 	public boolean handleText() {
-		return (this.handleText == Text.ACCEPT);
+		return (this.handleText == TagCommand.ACCEPT) || (this.handleText == TagCommand.ACCEPT_TEXT);
+	}
+	
+	public boolean handleAttributes() {
+		return (this.handleText == TagCommand.ACCEPT || this.handleText == TagCommand.ACCEPT_ATTRIBUTES );
 	}
 }

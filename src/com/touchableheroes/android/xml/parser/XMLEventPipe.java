@@ -41,7 +41,7 @@ public class XMLEventPipe {
 			return;
 		}
 		
-		prepareAttributes();
+		prepareAttributes(tag);
 		prepareText(isEmptyTag, tag); 
 		
 		handleStartTag(tag);
@@ -50,9 +50,11 @@ public class XMLEventPipe {
 			endTag();
 	}
 
-	private void prepareAttributes() {
+	private void prepareAttributes(final Tag tag) {
 		facade.resetAttributes();
-		facade.catchAttributes();
+		
+		if( tag.handleAttributes() )
+			facade.catchAttributes();
 	}
 
 	private void prepareText(final boolean isEmptyTag, final Tag tag) {

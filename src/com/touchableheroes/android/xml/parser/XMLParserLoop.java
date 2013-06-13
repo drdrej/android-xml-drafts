@@ -25,14 +25,13 @@ public class XMLParserLoop {
 	
 	public void run() {
 		do {
-			parser.next();
+			if( !parser.next() ) {
+				; // fix?!
+			}
 
 			if (parser.isStartTag()) {
 				final boolean isEmptyTag = parser.isEmptyTag();
 				pipe.startTag(isEmptyTag);
-				
-//				if( parser.isEndTag() )
-//					pipe.endTag();
 			} else if (parser.isEndTag()) {
 				pipe.endTag();
 			} else if (parser.isText() || parser.isStartOfDoc()

@@ -36,12 +36,14 @@ public class XMLParserFacade {
 		}
 	}
 
-	public void next() {
+	public boolean next() {
 		try {
 			parser.next();
-		} catch( final Throwable x) {
-			throw new IllegalStateException(
-					"Couldn't call next() element from parser. Got an exception.", x);
+			return true;
+		} catch(  final Throwable x ) {
+			Logger.error( "Skip the following exception (check log)" );
+			x.printStackTrace();
+			return false;
 		}
 	}
 

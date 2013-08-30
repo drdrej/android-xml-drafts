@@ -184,9 +184,6 @@ class CollectNames implements DomainSpecificBinding {
 		loop.run();
 
 ```
-## Tests
-I've created some tests in https://github.com/drdrej/android-xml-drafts-test.
-
 
 ## License: 
 Apache License

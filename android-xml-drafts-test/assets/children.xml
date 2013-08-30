@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+   <items>
+      
+	  <children> <!-- test: back-ref -->
+	       <item bs:ik="hh" name="item1">text1</item>
+	  </children>
+	  
+	  <item name="item2" >text2</item>
+
+	  <items> <!-- test:skip because not declared as state. -->
+	      <item name="item3">text3</item>
+	  </items>	  
+	  	  
+	  <item bs:ik="hh" name="item4" >text4</item>
+	  
+	  <i1>
+	      <item name="item5">text5</item>
+	  </i1>
+	  
+      <item name="item6" />
+	  
+      <item name="item7" />
+	  
+      <ns:unknown />
+      <ns:unknown />
+      
+      <item name="item8" >text8</item>
+	  
+      <skip> <!-- skip because declared to skip -->
+         <item name="item7" >text7</item>
+      </skip>
+      
+      
+   </items>
+</root>

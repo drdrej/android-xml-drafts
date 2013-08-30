@@ -1,0 +1,47 @@
+<!--
+LICENSE: Apache-License 2
+Author:  Andreas Siebert
+
+
+-->
+<project basedir="." default="jar">
+
+	<property file="build.properties" />
+
+	<target name="clean" >
+		<delete dir="${basedir}/deploy/" failonerror="false" >
+		</delete>
+	</target>	
+	
+	<target name="jar">
+		<echo message="package version: ">${project.version}</echo>
+		<mkdir dir="${basedir}/deploy/" />
+
+		<jar destfile="${basedir}/deploy/xml-drafts-android-${project.version}.jar" 
+			basedir="${basedir}/bin/classes" 
+			includes="**/*.class">
+
+		</jar>
+	</target>
+
+	<target name="jar-with-sources">
+		<jar destfile="${basedir}/deploy/xml-drafts-android-${project.version}.jar" basedir="${basedir}/bin/classes" includes="**/*.class">
+
+		</jar>
+	</target>
+
+	<target name="sources">
+		<jar destfile="${basedir}/deploy/xml-drafts-android-${project.version}.jar" basedir="${basedir}/bin/classes" includes="**/*.class">
+
+		</jar>
+	</target>
+	
+	<target name="jardoc" >
+		
+	</target>
+	
+	<target name="lib-full" depends="clean, jar" >
+	    <echo >Creates a full deployment of this library. Version: ${project.version}</echo>
+	</target>
+
+</project>
